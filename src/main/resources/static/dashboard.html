@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kodbank - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(233, 69, 96, 0.15) 0%, transparent 70%);
+            top: -200px;
+            right: -200px;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        body::after {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(79, 172, 254, 0.15) 0%, transparent 70%);
+            bottom: -150px;
+            left: -150px;
+            animation: float 10s ease-in-out infinite reverse;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(30px, 30px); }
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            padding: 50px;
+            max-width: 550px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo {
+            font-size: 4rem;
+            margin-bottom: 10px;
+        }
+        
+        h1 {
+            color: #fff;
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .welcome-text {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+        }
+        
+        .balance-card {
+            background: linear-gradient(135deg, rgba(233, 69, 96, 0.2) 0%, rgba(255, 107, 107, 0.1) 100%);
+            border-radius: 20px;
+            padding: 35px;
+            text-align: center;
+            margin-bottom: 30px;
+            border: 1px solid rgba(233, 69, 96, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .balance-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .balance-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .balance-amount {
+            color: #fff;
+            font-size: 3rem;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .balance-amount.animate {
+            animation: countUp 1s ease-out;
+        }
+        
+        @keyframes countUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        .currency {
+            font-size: 1.5rem;
+            margin-right: 5px;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            margin-top: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(233, 69, 96, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(233, 69, 96, 0.5);
+        }
+        
+        .btn-primary:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .error {
+            background: rgba(233, 69, 96, 0.2);
+            color: #ff6b6b;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            display: none;
+            border: 1px solid rgba(233, 69, 96, 0.3);
+        }
+        
+        .logout-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .logout-link a {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-link a:hover {
+            color: #fff;
+        }
+        
+        .token-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .token-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+        
+        .token-value {
+            color: #4facfe;
+            font-size: 0.7rem;
+            word-break: break-all;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            max-height: 80px;
+            overflow-y: auto;
+        }
+        
+        .copy-btn {
+            background: rgba(79, 172, 254, 0.2);
+            border: 1px solid rgba(79, 172, 254, 0.3);
+            color: #4facfe;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            background: rgba(79, 172, 254, 0.3);
+        }
+        
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            top: -10px;
+            z-index: 1000;
+            animation: confetti-fall 3s linear forwards;
+        }
+        
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🏦</div>
+            <h1>Kodbank</h1>
+            <p class="welcome-text">Welcome, <span id="username">User</span>!</p>
+        </div>
+        
+        <div id="error" class="error"></div>
+        
+        <div class="balance-card">
+            <div class="balance-label">Your Balance</div>
+            <div class="balance-amount" id="balance">
+                <span class="currency">₹</span><span id="balanceValue">---</span>
+            </div>
+        </div>
+        
+        <button class="btn btn-primary" id="checkBalanceBtn" onclick="checkBalance()">
+            Check Balance
+        </button>
+        
+        <div class="token-section">
+            <div class="token-label">Your JWT Token</div>
+            <div class="token-value" id="tokenDisplay">No token available</div>
+            <button class="copy-btn" onclick="copyToken()">Copy Token</button>
+        </div>
+        
+        <button class="btn btn-secondary" onclick="logout()">
+            Logout
+        </button>
+        
+        <div class="logout-link">
+            <a href="/" onclick="logout()">Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        // Get username from localStorage
+        const username = localStorage.getItem('username');
+        if (username) {
+            document.getElementById('username').textContent = username;
+        }
+        
+        // Display token on page load
+        window.onload = function() {
+            // Get token from cookie or localStorage
+            const cookies = document.cookie.split(';');
+            let token = '';
+            for (let cookie of cookies) {
+                if (cookie.trim().startsWith('token=')) {
+                    token = cookie.trim().substring(6);
+                    break;
+                }
+            }
+            
+            if (!token) {
+                token = localStorage.getItem('token');
+            }
+            
+            if (token) {
+                document.getElementById('tokenDisplay').textContent = token;
+            }
+            
+            // Check if logged in
+            if (!token) {
+                window.location.href = '/login.html';
+            }
+        };
+        
+        function copyToken() {
+            const token = document.getElementById('tokenDisplay').textContent;
+            if (token && token !== 'No token available') {
+                navigator.clipboard.writeText(token).then(function() {
+                    alert('Token copied to clipboard!');
+                }, function(err) {
+                    console.error('Could not copy text: ', err);
+                });
+            }
+        }
+        
+        function checkBalance() {
+            const errorDiv = document.getElementById('error');
+            const balanceValue = document.getElementById('balanceValue');
+            const balanceAmount = document.getElementById('balance');
+            const btn = document.getElementById('checkBalanceBtn');
+            
+            errorDiv.style.display = 'none';
+            btn.disabled = true;
+            btn.textContent = 'Loading...';
+            
+            // Get token from cookie
+            const cookies = document.cookie.split(';');
+            let token = '';
+            for (let cookie of cookies) {
+                if (cookie.trim().startsWith('token=')) {
+                    token = cookie.trim().substring(6);
+                    break;
+                }
+            }
+            
+            if (!token) {
+                token = localStorage.getItem('token');
+            }
+            
+            if (!token) {
+                errorDiv.textContent = 'Please login first';
+                errorDiv.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Check Balance';
+                return;
+            }
+            
+            fetch('/api/user/balance', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                },
+                credentials: 'include'
+            })
+            .then(response => response.json())
+            .then(data => {
+                btn.disabled = false;
+                btn.textContent = 'Check Balance';
+                
+                if (data.error) {
+                    errorDiv.textContent = data.error;
+                    errorDiv.style.display = 'block';
+                } else {
+                    // Animate the balance
+                    balanceAmount.classList.remove('animate');
+                    void balanceAmount.offsetWidth; // Trigger reflow
+                    balanceAmount.classList.add('animate');
+                    
+                    // Format balance with commas
+                    const formattedBalance = parseFloat(data.balance).toLocaleString('en-IN', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+                    balanceValue.textContent = formattedBalance;
+                    
+                    // Trigger confetti
+                    createConfetti();
+                }
+            })
+            .catch(error => {
+                btn.disabled = false;
+                btn.textContent = 'Check Balance';
+                errorDiv.textContent = 'An error occurred. Please try again.';
+                errorDiv.style.display = 'block';
+            });
+        }
+        
+        function createConfetti() {
+            const colors = ['#e94560', '#ff6b6b', '#4facfe', '#00f2fe', '#ffd700', '#ff9a9e'];
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                    
+                    // Random shapes
+                    const shapes = ['50%', '0%'];
+                    confetti.style.borderRadius = shapes[Math.floor(Math.random() * shapes.length)];
+                    
+                    document.body.appendChild(confetti);
+                    
+                    // Remove after animation
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 4000);
+                }, i * 30);
+            }
+        }
+        
+        function logout() {
+            // Clear localStorage
+            localStorage.removeItem('token');
+            localStorage.removeItem('username');
+            
+            // Clear cookies
+            document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            
+            // Redirect to home
+            window.location.href = '/';
+        }
+    </script>
+</body>
+</html>
